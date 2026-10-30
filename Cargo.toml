@@ -25,7 +25,7 @@ thiserror = "1.0"
 reqwest = { version = "0.11", features = ["json", "multipart", "blocking"] }
 percent-encoding = "2.3"
 semver = "1.0"
-zip = "0.6"
+zip = "9.0"
 tokio = { version = "1.0", features = ["full"] }
 tempfile = "3.8"
 base64 = "0.22"
