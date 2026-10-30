@@ -1,0 +1,31 @@
+[package]
+name = "whippy-workflows-cli"
+version = "0.1.0"
+edition = "2021"
+description = "CLI for building and publishing Whippy workflow apps (ww-cli)"
+license = "MIT"
+repository = "https://github.com/hellowhippy/ww-cli"
+homepage = "https://github.com/hellowhippy/ww-cli"
+readme = "README.md"
+
+[[bin]]
+name = "whippy-workflows-cli"
+path = "src/main.rs"
+
+[[bin]]
+name = "ww-cli"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+reqwest = { version = "0.11", features = ["json", "multipart", "blocking"] }
+percent-encoding = "2.3"
+semver = "1.0"
+zip = "0.6"
+tokio = { version = "1.0", features = ["full"] }
+tempfile = "3.8"
+base64 = "0.22"
