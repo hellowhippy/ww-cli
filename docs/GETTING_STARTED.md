@@ -2,6 +2,10 @@
 
 This guide is for **external** developers building Whippy workflow apps. You only need this CLI, Node.js, a Whippy API key, and your vendor’s API docs.
 
+Your app’s actions show up as **App steps** in the Whippy workflow builder (alongside triggers, code, conditions, and other steps):
+
+![Whippy workflow builder with App steps for integrations like Anthropic, OpenAI, and Whippy](./assets/workflow-builder.png)
+
 ## 1. Install the CLI
 
 ```bash
@@ -13,23 +17,27 @@ Ensure `~/.cargo/bin` is on your `PATH`.
 
 ## 2. Log in
 
-1. In Whippy, create an API key for your organization.
+1. Open your Whippy account and go to **Developers → API keys**:  
+   [https://app.whippy.co/developer/keys](https://app.whippy.co/developer/keys)  
+   Create a key (or copy an existing one) for your organization.
 2. Run:
 
 ```bash
 ww-cli login
 ```
 
-Credentials are stored in `~/.whippyrc` (`api_key`, `api_url`). Production is `https://workflows.whippy.ai`.
+Paste the key when prompted. Credentials are stored in `~/.whippyrc` (`api_key`, `api_url`). Production workflows API is `https://workflows.whippy.ai`.
 
 ## 3. Scaffold an app
 
 ```bash
-ww-cli init my-app --language typescript --auth api_key
+ww-cli init my-app --language typescript --auth custom
 cd my-app
 ```
 
-Use `--auth oauth2` when your vendor uses OAuth (the Connect form must match what Whippy supports). For simple API-key vendors, prefer a **custom** auth shape in the app definition when you need a Connect form that isn’t the scaffold’s default `api_key` type — see your Whippy contact or internal app examples if the default form doesn’t render fields you need.
+Use `--auth custom` for API-key vendors so the Whippy Connect form renders (the scaffold’s
+`api_key` auth type does **not** show a Connect form). Use `--auth oauth2` when your vendor
+uses OAuth.
 
 ## 4. Implement actions
 
@@ -70,12 +78,15 @@ npm install -g wrangler@3.114.1
 Bump `version` in your app’s `package.json` (semver). Then:
 
 ```bash
-ww-cli push                 # creates/updates a draft version on Whippy
+ww-cli push --create        # first publish only (creates the app + draft version)
+ww-cli push                 # later bumps (requires existing .whippyapprc from --create)
 ww-cli versions             # inspect remote versions
 ww-cli promote 1.0.0        # publish when ready
 ```
 
-`push` rejects a version lower than the highest semver already on the server. Use a higher version to move forward.
+Plain `ww-cli push` without `--create` fails until the app exists locally (`.whippyapprc`).
+`push` also rejects a version lower than the highest semver already on the server — bump
+`package.json` to move forward.
 
 **Agents / automation:** prefer `build` / `validate` / `invoke` only. Let a human run `push` / `promote` unless they explicitly ask.
 
@@ -91,6 +102,11 @@ After promote, open the workflow builder in your Whippy account, add an **App** 
 | `validate` passes but the builder form looks wrong | Re-check `input_fields` types and samples; rebuild and re-push |
 | First-time publish permission errors | Confirm your API key belongs to an org that can create workflow apps |
 | macOS logo processing fails | `brew install vips` |
+
+## Next: best practices and AI skills
+
+- [Best practices](./BEST_PRACTICES.md) — auth, fields, samples, deploy conventions.
+- [AI skills](../skills/README.md) — install `building-workflow-apps` into Cursor (or other agents) so they follow the same contract.
 
 ## What this CLI is not
 

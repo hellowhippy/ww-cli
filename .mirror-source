@@ -1,5 +1,5 @@
 source_repo=hellowhippy/whippy-app
 source_path=workflows/cli
-source_commit=92a74021e63f7c2bc2982f85e0faa7ba91202b30
-source_commit_short=92a74021e63
-prepared_at_utc=2026-10-30T10:47:41Z
+source_commit=0f9269c6c69b22752c7e1ca95cd7e7a155effbf5
+source_commit_short=0f9269c6
+prepared_at_utc=2026-10-30T11:40:12Z

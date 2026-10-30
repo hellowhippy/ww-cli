@@ -2,7 +2,7 @@
 
 Build, validate, and publish **Whippy workflow apps** (integrations) from your own machine.
 
-You do **not** need the Whippy monorepo. You write a small TypeScript package locally; the CLI talks to Whippy’s hosted workflows platform at `https://workflows.whippy.ai`.
+You do **not** need the Whippy monorepo. You write a small TypeScript package locally; the CLI talks to Whippy’s hosted workflows platform at `https://workflows.whippy.ai`. Apps you publish appear as steps in the [workflow builder](./docs/GETTING_STARTED.md).
 
 ## Install
 
@@ -40,7 +40,9 @@ cargo install --git https://github.com/hellowhippy/ww-cli --locked --force
 ## Prerequisites
 
 1. **A Whippy account + API key**  
-   Create an API key in the Whippy dashboard. If you do not have a Whippy account, contact [whippy.ai](https://whippy.ai) / Whippy sales — there is no anonymous sandbox for publishing apps.
+   In the Whippy dashboard go to **Developers → API keys**  
+   ([https://app.whippy.co/developer/keys](https://app.whippy.co/developer/keys)), create a key, and paste it into `ww-cli login`.  
+   If you do not have a Whippy account, contact [whippy.ai](https://whippy.ai) / Whippy sales — there is no anonymous sandbox for publishing apps.
 
 2. **Node.js** (for `build` / bundling)
 
@@ -56,8 +58,10 @@ cargo install --git https://github.com/hellowhippy/ww-cli --locked --force
 ww-cli login
 # paste your Whippy API key when prompted
 
-ww-cli init my-app --language typescript --auth api_key
+ww-cli init my-app --language typescript --auth custom
 cd my-app
+# API-key vendors: keep auth type `custom` so the Connect form renders
+# (scaffold `api_key` does not show a Connect form). Use `--auth oauth2` for OAuth.
 
 # edit src/** …
 
@@ -66,9 +70,11 @@ ww-cli validate
 ww-cli invoke <action_key> --data test-data.json   # after filling auth in test-data.json
 
 # When you are ready to publish a version (humans only — agents should not push):
-ww-cli push
+ww-cli push --create    # first publish only (creates the app on Whippy)
+ww-cli push             # later version bumps
 ww-cli promote <semver>
 ```
+
 
 Default API base URL is **`https://workflows.whippy.ai`**. You normally never need to change it.
 
@@ -95,12 +101,30 @@ Run `ww-cli <command> --help` for flags.
 
 ## Docs
 
-- [Getting started](./docs/GETTING_STARTED.md) — longer walkthrough and gotchas
+- [Getting started](./docs/GETTING_STARTED.md) — walkthrough and first publish
+- [Best practices](./docs/BEST_PRACTICES.md) — field/auth/sample/deploy conventions
 - [Changelog](./CHANGELOG.md)
+
+## AI skills (for Cursor / coding agents)
+
+This repo ships an Agent Skill so AI tools follow Whippy’s app contract:
+
+- [`skills/building-workflow-apps/SKILL.md`](./skills/building-workflow-apps/SKILL.md)
+- How to install and invoke: [`skills/README.md`](./skills/README.md)
+
+Quick start for Cursor (from your workflow app root):
+
+```bash
+mkdir -p .cursor/skills
+git clone --depth 1 https://github.com/hellowhippy/ww-cli.git /tmp/ww-cli
+cp -R /tmp/ww-cli/skills/building-workflow-apps .cursor/skills/
+```
+
+Then ask the agent to build or fix your app — it should pick up **building-workflow-apps**. Agents may run `ww-cli build` / `validate` / `invoke` only; leave `push` / `promote` to you unless you ask.
 
 ## Source of truth
 
-This public repository is a **mirror** of `workflows/cli` inside Whippy’s private monorepo. Releases and docs here are updated automatically when that path changes on `main`. Do not open feature PRs here expecting them to merge back — contribute through Whippy.
+This public repository is a **mirror** of Whippy’s internal CLI sources. Releases and docs update when that CLI changes on Whippy’s main branch. Do not open feature PRs here expecting them to merge back — contribute through Whippy.
 
 ## License
 

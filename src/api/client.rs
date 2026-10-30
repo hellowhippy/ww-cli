@@ -19,7 +19,7 @@ pub fn validate_api_key(api_url: &str, api_key: &str) -> Result<()> {
         Ok(resp) => resp,
         Err(e) => {
             anyhow::bail!(
-                "Failed to connect to API at {}\n\nError: {}\n\nTip: Set WHIPPY_WORKFLOWS_API_URL environment variable if using a different URL.\nExample: export WHIPPY_WORKFLOWS_API_URL=https://whippy-app.onrender.com",
+                "Failed to connect to API at {}\n\nError: {}\n\nTip: Set WHIPPY_WORKFLOWS_API_URL if using a non-default URL.\nDefault production API is https://workflows.whippy.ai\nExample (local): export WHIPPY_WORKFLOWS_API_URL=http://localhost:4003",
                 api_url,
                 e
             );
